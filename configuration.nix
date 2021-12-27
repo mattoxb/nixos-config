@@ -121,6 +121,8 @@
     logseq
     zoom-us
     direnv
+    taskwarrior
+    tasksh
 
     # Programming
     python3
