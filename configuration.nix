@@ -60,6 +60,23 @@
     ];
   };
 
+  # Systemd
+
+  systemd = {
+    timers.rsync-backup = {
+      wantedBy = [ "timers.target" ];
+      partOf = [ "simple-timer.service" ];
+      timerConfig.OnCalendar = "*-*-* 23:00:00";
+    };
+    services.rsync-backup = {
+      serviceConfig.Type = "oneshot";
+      script = ''
+        /run/current-system/sw/bin/zsh /home/mattox/backups/run-backups
+      '';
+    };
+  };
+
+
   # Bluetooth
 
   hardware.bluetooth.enable = true;
