@@ -129,6 +129,15 @@
 
   # List services that you want to enable:
 
+  # Syncthing
+
+  services.syncthing = {
+    enable = true;
+    user = "mattox";
+    dataDir = "/home/mattox/Synchronized";    # Default folder for new synced folders
+    configDir = "/home/mattox/.config/syncthing";   # Folder for Syncthing's settings and keys
+  };
+
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
