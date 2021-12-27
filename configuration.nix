@@ -110,14 +110,22 @@
     # System
     tmux
     fzf
+    htop
+    ripgrep
+    silver-searcher
     direnv
+    keychain
 
-    # Productivity
+    # Applications
     logseq
+    zoom-us
+    direnv
 
     # Programming
     python3
   ];
+
+  nixpkgs.config.allowUnfree = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
