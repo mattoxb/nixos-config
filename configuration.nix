@@ -115,6 +115,7 @@
     silver-searcher
     direnv
     keychain
+    ksshaskpass
 
     # Applications
     logseq
