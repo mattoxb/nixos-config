@@ -135,6 +135,7 @@
     keychain
     ksshaskpass
     xclip
+    espanso
 
     # Applications
     logseq
