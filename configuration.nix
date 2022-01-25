@@ -4,11 +4,14 @@
 
 { config, pkgs, ... }:
 
-{
+  let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
+in {
   imports =
     [ # Include the results of the hardware scan.
+      # <nixos-hardware/dell/xps>  # not merged in yet. :(
       ./hardware-configuration.nix
       ./system-id.nix
+      ./xmonad.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -21,7 +24,22 @@
   # networking.hostId = "1EA29BFF";
   # networking.hostName = "dawn-treader"; # Define your hostname.
 
-  networking.networkmanager.enable = true;  # Enables wireless support via wpa_supplicant.
+  #networking.networkmanager.enable = true;  # Enables wireless support via wpa_supplicant.
+  #programs.nm-applet.enable=true;
+  networking.wireless={
+    enable=true;
+    userControlled.enable=true;
+    networks={
+        "Beckman Park"={
+           #psk="2249350444"
+           pskRaw="bb37420e272e4f8c962add9e341bb817168b801cb79ab7b394fb372a163b0578";
+        };
+        IllinoisNet={
+           pskRaw="b9b6a08732aeb38ebb39212c564138066c5ba80e8929b595174207b6c693b513";
+        };
+    };
+  };
+
 
   # Set your time zone.
   time.timeZone = "America/Chicago";
@@ -36,17 +54,41 @@
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Select internationalisation properties.
+   #Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_ALL="POSIX";
+  };
+
+
   console = {
     font = "Lat2-Terminus16";
     keyMap = "us";
   };
 
+  # Enable postgres
+
+  services.postgresql = {
+    enable = true;
+    package = pkgs.postgresql_14;
+    authentication = pkgs.lib.mkOverride 10 ''
+      local all all trust
+      host all all ::1/128 trust
+    '';
+    initialScript = pkgs.writeText "backend-initScript" ''
+      CREATE USER mattox SUPERUSER CREATEDB;
+    '';
+  };
+
+
   # Enable the X11 windowing system.
   services.xserver = {
+     dpi=120;
      enable = true;
      xkbOptions = "caps:swapescape";
+     monitorSection = ''
+        DisplaySize 366 229
+     '';
   };
 
 
@@ -103,7 +145,7 @@
     isNormalUser = true;
     description = "Mattox Beckman";
     shell = pkgs.zsh;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "networkmanager" "audio" "wheel" ]; # Enable ‘sudo’ for the user.
   };
 
   security.sudo.wheelNeedsPassword = false;
@@ -114,6 +156,7 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
+
   environment.systemPackages = with pkgs; [
     brave
 
@@ -128,6 +171,10 @@
     git
 
     # System
+    networkmanagerapplet
+    killall
+    libnotify
+    alacritty
     tmux
     fzf
     htop
@@ -137,19 +184,49 @@
     keychain
     ksshaskpass
     xclip
-    espanso
+    appimage-run
+    pavucontrol
+    gnumake
+    hugo
+    go
+    xorg.xdpyinfo
+    sqlite
 
     # Applications
     logseq
-    zoom-us
+    unstable.zoom-us
     direnv
     taskwarrior
     tasksh
     evince
     okular
+    hledger
+    slack
+    discord
+
+    texlive.combined.scheme-full
 
     # Programming
     python3
+    stack
+
+    # xmonad
+    # xmonad-with-packages
+    rofi
+    xmobar
+    xmonad-log
+    polybarFull
+    nitrogen
+    kdeconnect
+    dunst
+  ];
+
+  fonts.fonts = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk
+    noto-fonts-emoji
+    inconsolata
+    liberation_ttf
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -163,6 +240,8 @@
   # };
 
   # List services that you want to enable:
+
+  services.espanso.enable = true;
 
   # Syncthing
 
