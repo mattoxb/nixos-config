@@ -35,8 +35,20 @@ in {
            pskRaw="bb37420e272e4f8c962add9e341bb817168b801cb79ab7b394fb372a163b0578";
         };
         IllinoisNet={
-           pskRaw="b9b6a08732aeb38ebb39212c564138066c5ba80e8929b595174207b6c693b513";
+           #pskRaw="e7afb8f6f7834910f5925a45b0066cc92cfd627f99c95286b5e9ac3b82594a8f";
+           auth=''
+               eap=PEAP
+               identity="mattox"
+               password="XvYaltaGrimPrefixHymnal42"
+               phase2="auth=MSCHAPV2"
+               auth_alg=OPEN
+               key_mgmt=WPA-EAP
+            '';
         };
+        "Mattox's Galaxy S21 5G"={
+           psk="2249350444";
+        };
+
     };
   };
 
@@ -172,6 +184,7 @@ in {
 
     # System
     networkmanagerapplet
+    wpa_supplicant_gui
     killall
     libnotify
     alacritty
